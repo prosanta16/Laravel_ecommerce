@@ -45,6 +45,7 @@ class ProductController extends Controller
         $userId=Session::get('user')['id'];
         return Cart::where('user_id',$userId)->count();
     }
+    //show cart's product
     function cartList()
     {
         $userId=Session::get('user')['id'];
@@ -55,5 +56,22 @@ class ProductController extends Controller
          ->get();
  
          return view('cartlist',['products'=>$products]);
+    }
+    //remove cart item
+    function removeCart($id)
+    {
+        Cart::destroy($id);
+        return redirect('cartlist');
+    }
+    //order items
+    function orderNow()
+    {
+        $userId=Session::get('user')['id'];
+        $total= $products= DB::table('cart')
+         ->join('products','cart.product_id','=','products.id')
+         ->where('cart.user_id',$userId)
+         ->sum('products.price');
+ 
+         return view('ordernow',['total'=>$total]);
     }
 }

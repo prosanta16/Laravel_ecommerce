@@ -1,3 +1,11 @@
+<?php 
+use App\Http\Controllers\ProductController;
+$total=0;
+if(Session::has('user'))
+{
+  $total= ProductController::cartItem();
+}
+?>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
@@ -24,7 +32,7 @@
           <button type="submit" class="btn btn-default">Search</button>
         </form>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/cartlist">cart(0)</a></li>
+          <li><a href="/cartlist">cart({{$total}})</a></li>
           
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">OK

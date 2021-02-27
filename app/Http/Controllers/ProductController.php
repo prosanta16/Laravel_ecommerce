@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Cart;
-use session;
+use Session;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -24,7 +25,7 @@ class ProductController extends Controller
     //Add products in cart table
     function addToCart(Request $req)
     {
-        if($req->session()->has('user'))
+        if($req->Session()->has('user'))
         {
             $cart= new Cart;
             $cart->user_id=$req->session()->get('user')['id'];
@@ -41,7 +42,18 @@ class ProductController extends Controller
     //count cart value
     static function cartItem()
     {
-        $userId=session::get('user')['id'];
+        $userId=Session::get('user')['id'];
         return Cart::where('user_id',$userId)->count();
+    }
+    function cartList()
+    {
+        $userId=Session::get('user')['id'];
+        $products= DB::table('cart')
+         ->join('products','cart.product_id','=','products.id')
+         ->where('cart.user_id',$userId)
+         ->select('products.*','cart.id as cart_id')
+         ->get();
+ 
+         return view('cartlist',['products'=>$products]);
     }
 }
